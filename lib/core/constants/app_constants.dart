@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String openWeatherApiKey = 'API_KEY';
+  static const String openWeatherApiKey = 'YOUR_OPEN_WEATHER_API_KEY';
   static const String openWeatherBaseUrl =
       'https://api.openweathermap.org/data/2.5/weather';
 
