@@ -1,17 +1,73 @@
-# weather_app
+# 🌥️ Weather Magic
 
-A new Flutter project.
+**Weather Magic**, an elegant, animated weather application developed with Flutter.
 
-## Getting Started
+## ✨ Features
 
-This project is a starting point for a Flutter application.
+- **Real-Time Weather:** Live data retrieval (temperature, conditions, humidity, UV index, and wind speed).
+- **Interactive Interface:** Animated transitions, floating particle effects, and a premium design using `flutter_animate`.
+- **Dynamic Theme:** Smooth and elegant transition between Light Mode and Dark Mode.
+- **Live Map:** Google Maps integration to display the exact location of the weather forecast.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🏗️ Project Structure
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+The project follows a clean architecture and is easy to maintain:
+- `lib/core/` : Constants, App Routes, Utilities (Extensions), and Theme logic.
+- `lib/data/` : Models (`WeatherData`) and Network Services (`WeatherService`).
+- `lib/presentation/` : Reusable UI Screens and Widgets.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🚀 Getting Started
+
+To run this project locally, you will need two API keys.
+
+### 1. OpenWeather API Key (Weather Data)
+
+Weather Magic uses OpenWeatherMap for real-time weather data.
+
+**How to get the key:**
+1. Go to the [OpenWeather website](https://openweathermap.org/).
+2. Create a free account or log in.
+3. Generate a new key and copy it.
+4. In the code, open `lib/core/constants/app_constants.dart` and paste your key:
+   ```dart
+   static const String openWeatherApiKey = 'YOUR_OPEN_WEATHER_API_KEY';
+   ```
+
+### 2. Google Maps API Key (Location Map)
+
+The application integrates a Google Maps view to visually illustrate the selected city.
+
+**How to get the key:**
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project (or select an existing one).
+3. Go to **APIs & Services** > **Library**.
+4. Search for and **Enable** the API:
+   - `Maps SDK for Android`
+5. Go to **APIs & Services** > **Credentials**.
+6. Click on **Create credentials** > **API key**. Copy your new API key.
+
+**Where to configure the Google Maps key:**
+
+**For Android:**
+Open `android/app/src/main/AndroidManifest.xml` and update the meta-data tag inside `<application>`:
+```xml
+<meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE"/>
+```
+
+---
+
+## 💻 Running the Application
+
+Once you have configured your API keys:
+
+1. Clone the repository.
+2. Run `flutter pub get` to install all dependencies.
+3. Run the application on your preferred emulator or a physical device:
+   ```bash
+   flutter run
+   ```
+
