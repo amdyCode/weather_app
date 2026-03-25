@@ -87,8 +87,6 @@ class DashboardScreen extends StatelessWidget {
                     return WeatherCardWidget(
                       data: weatherList[index],
                       index: index,
-                      onTap: () =>
-                          AppRoutes.goToDetail(context, weatherList[index]),
                     );
                   },
                 ),

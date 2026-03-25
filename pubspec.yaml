@@ -29,11 +29,14 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.8
+  fl_chart: ^1.1.1
   flutter:
     sdk: flutter
   flutter_animate: ^4.5.2
+  geocoding: ^4.0.0
+  geolocator: ^14.0.2
   google_fonts: ^8.0.2
-  google_maps_flutter: ^2.14.2
+  google_maps_flutter: ^2.15.0
   http: ^1.6.0
   percent_indicator: ^4.2.5
   provider: ^6.1.5+1

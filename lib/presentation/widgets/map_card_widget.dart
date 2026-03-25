@@ -2,16 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:weather_app/core/theme/app_colors.dart';
 import 'package:weather_app/core/utils/extensions.dart';
-import 'package:weather_app/data/models/weather_data.dart';
 
 class MapCardWidget extends StatelessWidget {
-  final WeatherData data;
-  const MapCardWidget({super.key, required this.data});
+  final double latitude;
+  final double longitude;
+  final String cityName;
+  final double temperature;
+  final String condition;
+
+  const MapCardWidget({
+    super.key,
+    required this.latitude,
+    required this.longitude,
+    required this.cityName,
+    required this.temperature,
+    required this.condition,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
-    final position = LatLng(data.latitude, data.longitude);
+    final position = LatLng(latitude, longitude);
     return Container(
           height: 250,
           decoration: BoxDecoration(
@@ -36,12 +47,12 @@ class MapCardWidget extends StatelessWidget {
               initialCameraPosition: CameraPosition(target: position, zoom: 11),
               markers: {
                 Marker(
-                  markerId: MarkerId(data.cityName),
+                  markerId: MarkerId(cityName),
                   position: position,
                   infoWindow: InfoWindow(
-                    title: data.cityName,
+                    title: cityName,
                     snippet:
-                        '${data.temperature.round()}°C - ${data.condition}',
+                        '${temperature.round()}°C - $condition',
                   ),
                 ),
               },

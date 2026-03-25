@@ -4,6 +4,7 @@ import 'package:weather_app/core/routes/app_routes.dart';
 import 'package:weather_app/core/theme/app_colors.dart';
 import 'package:weather_app/core/theme/app_gradients.dart';
 import 'package:weather_app/core/utils/extensions.dart';
+import 'package:weather_app/presentation/widgets/destination_selector_widget.dart';
 
 class StartButtonWidget extends StatelessWidget {
   const StartButtonWidget({super.key});
@@ -26,7 +27,7 @@ class StartButtonWidget extends StatelessWidget {
               ],
             ),
             child: ElevatedButton(
-              onPressed: () => AppRoutes.goToLoading(context),
+              onPressed: () => AppRoutes.goToLoading(context, destination: DestinationType.senegal),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,

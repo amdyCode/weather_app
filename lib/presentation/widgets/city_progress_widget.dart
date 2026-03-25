@@ -22,7 +22,7 @@ class CityProgressWidget extends StatelessWidget {
             ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 16),
-          ...List.generate(AppConstants.cityDisplayNames.length, (index) {
+          ...List.generate(AppConstants.senegalDisplayNames.length, (index) {
             final isFetched = index < cityFetched;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -46,7 +46,7 @@ class CityProgressWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    AppConstants.cityDisplayNames[index],
+                    AppConstants.senegalDisplayNames[index],
                     style: TextStyle(
                       fontSize: 15,
                       color: isFetched

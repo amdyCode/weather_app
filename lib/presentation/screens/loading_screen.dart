@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/core/utils/extensions.dart';
-import 'package:weather_app/presentation/widgets/city_progress_widget.dart';
-import 'package:weather_app/presentation/widgets/progress_gauge_widget.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_gradients.dart';
 import '../../core/theme/theme_provider.dart';
 import '../../core/routes/app_routes.dart';
-import '../../data/models/weather_data.dart';
 import '../../data/services/weather_service.dart';
+import '../../presentation/widgets/destination_selector_widget.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -25,16 +23,23 @@ class _LoadingScreenState extends State<LoadingScreen>
   double _progress = 0.0;
   int _messageIndex = 0;
   Timer? _messageTimer;
+  Timer? _progressTimer;
   bool _isComplete = false;
-  int _cityFetched = 0;
+  String _statusText = '';
 
   @override
   void initState() {
     super.initState();
-    _startLoading();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startLoading();
+    });
   }
 
   void _startLoading() async {
+    final destination =
+        ModalRoute.of(context)?.settings.arguments as DestinationType? ??
+            DestinationType.senegal;
+
     _messageTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       if (!mounted) return;
       setState(() {
@@ -43,39 +48,64 @@ class _LoadingScreenState extends State<LoadingScreen>
       });
     });
 
+    // Simulate smooth progress loading up to 90%
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (!mounted) return;
+      setState(() {
+        if (_progress < 0.9) {
+          _progress += 0.01;
+        }
+      });
+    });
+
     try {
       final service = WeatherService();
-      final List<WeatherData> results = [];
 
-      for (int i = 0; i < AppConstants.targetCities.length; i++) {
-        final query = AppConstants.targetCities[i];
-        final data = await service.fetchWeather(query);
-        results.add(data);
+      if (destination == DestinationType.senegal) {
+        // Mode Sénégal: géolocalisation + prévisions
+        setState(() => _statusText = 'Obtention de la position & météo…');
+
+        final forecast = await service.fetchCurrentLocationForecast();
 
         if (mounted) {
           setState(() {
-            _cityFetched = i + 1;
-            _progress = _cityFetched / AppConstants.targetCities.length;
+            _progress = 1.0;
+            _isComplete = true;
+          });
+          _messageTimer?.cancel();
+          _progressTimer?.cancel();
+
+          Future.delayed(const Duration(milliseconds: 800), () {
+            if (mounted) {
+              AppRoutes.goToForecastDetail(context, forecast);
+            }
           });
         }
-      }
+      } else {
+        // Mode Reste du Monde: 5 villes
+        setState(() => _statusText = 'Chargement des villes mondiales…');
 
-      if (mounted) {
-        setState(() {
-          _progress = 1.0;
-          _isComplete = true;
-        });
-        _messageTimer?.cancel();
+        final worldCities = await service.fetchWorldCities();
 
-        Future.delayed(const Duration(milliseconds: 800), () {
-          if (mounted) {
-            AppRoutes.goToDashboard(context, results);
-          }
-        });
+        if (mounted) {
+          setState(() {
+            _progress = 1.0;
+            _isComplete = true;
+          });
+          _messageTimer?.cancel();
+          _progressTimer?.cancel();
+
+          Future.delayed(const Duration(milliseconds: 800), () {
+            if (mounted) {
+              AppRoutes.goToWorldCities(context, worldCities);
+            }
+          });
+        }
       }
     } catch (e) {
       if (mounted) {
         _messageTimer?.cancel();
+        _progressTimer?.cancel();
         AppRoutes.goToError(context, e.toString());
       }
     }
@@ -84,6 +114,7 @@ class _LoadingScreenState extends State<LoadingScreen>
   @override
   void dispose() {
     _messageTimer?.cancel();
+    _progressTimer?.cancel();
     super.dispose();
   }
 
@@ -136,22 +167,18 @@ class _LoadingScreenState extends State<LoadingScreen>
 
               // Title
               Text(
-                '⛅ Weather Update',
+                '⛅ Météo en cours…',
                 style: context.textTheme.headlineLarge,
               ).animate().fadeIn(duration: 500.ms),
 
               const SizedBox(height: 48),
 
-              ProgressGaugeWidget(isComplete: _isComplete, progress: _progress)
-                  .animate()
-                  .fadeIn(delay: 200.ms, duration: 600.ms)
-                  .scale(
-                    begin: const Offset(0.8, 0.8),
-                    end: const Offset(1, 1),
-                  ),
+              // Progress animation
+              _buildProgressIndicator(isDark),
 
               const SizedBox(height: 40),
 
+              // Status/message
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 transitionBuilder: (child, animation) {
@@ -186,10 +213,16 @@ class _LoadingScreenState extends State<LoadingScreen>
                 ),
               ),
 
-              const SizedBox(height: 32),
-
-              // City progress
-              CityProgressWidget(cityFetched: _cityFetched),
+              if (_statusText.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  _statusText,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.accentPurple,
+                  ),
+                ),
+              ],
 
               const Spacer(flex: 2),
             ],
@@ -197,5 +230,48 @@ class _LoadingScreenState extends State<LoadingScreen>
         ),
       ),
     );
+  }
+
+  Widget _buildProgressIndicator(bool isDark) {
+    return SizedBox(
+      width: 120,
+      height: 120,
+      child: Stack(
+        children: [
+          Center(
+            child: SizedBox(
+              width: 100,
+              height: 100,
+              child: CircularProgressIndicator(
+                value: _progress,
+                strokeWidth: 6,
+                backgroundColor: isDark
+                    ? Colors.white.withValues(alpha: 0.1)
+                    : Colors.black.withValues(alpha: 0.05),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  _isComplete ? AppColors.accentCyan : AppColors.accentPurple,
+                ),
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              _isComplete ? '✅' : '${(_progress * 100).round()}%',
+              style: TextStyle(
+                fontSize: _isComplete ? 32 : 20,
+                fontWeight: FontWeight.w700,
+                color: isDark ? AppColors.textWhite : AppColors.textDark,
+              ),
+            ),
+          ),
+        ],
+      ),
+    )
+        .animate()
+        .fadeIn(delay: 200.ms, duration: 600.ms)
+        .scale(
+          begin: const Offset(0.8, 0.8),
+          end: const Offset(1, 1),
+        );
   }
 }

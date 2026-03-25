@@ -4,10 +4,10 @@
 
 ## ✨ Features
 
-- **Real-Time Weather:** Live data retrieval (temperature, conditions, humidity, UV index, and wind speed).
+- **Real-Time Weather:** Live data retrieval (temperature, conditions, humidity, UV index, and wind speed) using the free Open-Meteo API.
 - **Interactive Interface:** Animated transitions, floating particle effects, and a premium design using `flutter_animate`.
 - **Dynamic Theme:** Smooth and elegant transition between Light Mode and Dark Mode.
-- **Live Map:** Google Maps integration to display the exact location of the weather forecast.
+- **Live Map & GPS:** Google Maps integration coupled with `geolocator` and `geocoding` to display exact location forecasts with precise neighborhood names.
 ---
 
 ## 🏗️ Project Structure
@@ -23,9 +23,12 @@ The project follows a clean architecture and is easy to maintain:
 
 To run this project locally, you will need two API keys.
 
-### 1. OpenWeather API Key (Weather Data)
+### 1. Open-Meteo & Open-Weather API (Weather Data)
 
-Weather Magic uses OpenWeatherMap for real-time weather data.
+Weather Magic uses **Open-Meteo** for real-time weather data.
+The great thing about Open-Meteo is that it is completely **free for non-commercial use and does not require an API key**!
+
+*Note: The project previously referenced OpenWeatherMap, but we have migrated to Open-Meteo to simplify the setup process for new users.*
 
 **How to get the key:**
 1. Go to the [OpenWeather website](https://openweathermap.org/).
@@ -35,6 +38,7 @@ Weather Magic uses OpenWeatherMap for real-time weather data.
    ```dart
    static const String openWeatherApiKey = 'YOUR_OPEN_WEATHER_API_KEY';
    ```
+
 
 ### 2. Google Maps API Key (Location Map)
 
@@ -57,6 +61,8 @@ Open `android/app/src/main/AndroidManifest.xml` and update the meta-data tag ins
 <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE"/>
 ```
+
+*Note: The application also requires GPS permissions (`ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`) and uses the Apache HTTP legacy library (`org.apache.http.legacy`) to support older map renderers. These are already pre-configured in the `AndroidManifest.xml`.*
 
 ---
 

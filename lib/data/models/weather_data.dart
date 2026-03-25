@@ -13,6 +13,8 @@ class WeatherData {
   final double tempLow;
   final double latitude;
   final double longitude;
+  final String sublocality;
+  final String locality;
 
   const WeatherData({
     required this.cityName,
@@ -29,6 +31,8 @@ class WeatherData {
     required this.tempLow,
     required this.latitude,
     required this.longitude,
+    this.sublocality = '',
+    this.locality = '',
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
@@ -49,6 +53,8 @@ class WeatherData {
       tempLow: (json['main']['temp_min'] as num).toDouble(),
       latitude: (json['coord']['lat'] as num).toDouble(),
       longitude: (json['coord']['lon'] as num).toDouble(),
+      sublocality: json['sublocality'] ?? '',
+      locality: json['locality'] ?? '',
     );
   }
 

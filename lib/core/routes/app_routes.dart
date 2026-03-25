@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../data/models/weather_data.dart';
+import '../../data/models/forecast_data.dart';
 import '../../presentation/screens/welcome_screen.dart';
 import '../../presentation/screens/loading_screen.dart';
-import '../../presentation/screens/dashboard_screen.dart';
-import '../../presentation/screens/city_detail_screen.dart';
+import '../../presentation/screens/forecast_detail_screen.dart';
+import '../../presentation/screens/world_cities_screen.dart';
 import '../../presentation/screens/error_screen.dart';
+import '../../presentation/widgets/destination_selector_widget.dart';
 
 class AppRoutes {
   static const String welcome = '/';
   static const String loading = '/loading';
-  static const String dashboard = '/dashboard';
-  static const String detail = '/detail';
+  static const String forecastDetail = '/forecast-detail';
+  static const String worldCities = '/world-cities';
   static const String error = '/error';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -19,10 +20,10 @@ class AppRoutes {
         return _buildRoute(const WelcomeScreen(), settings);
       case loading:
         return _buildRoute(const LoadingScreen(), settings);
-      case dashboard:
-        return _buildRoute(const DashboardScreen(), settings);
-      case detail:
-        return _buildRoute(const CityDetailScreen(), settings);
+      case forecastDetail:
+        return _buildRoute(const ForecastDetailScreen(), settings);
+      case worldCities:
+        return _buildRoute(const WorldCitiesScreen(), settings);
       case error:
         return _buildRoute(const ErrorScreen(), settings);
       default:
@@ -34,16 +35,22 @@ class AppRoutes {
     return MaterialPageRoute(builder: (_) => page, settings: settings);
   }
 
-  static void goToLoading(BuildContext context) {
-    Navigator.pushNamed(context, loading);
+  static void goToLoading(
+    BuildContext context, {
+    required DestinationType destination,
+  }) {
+    Navigator.pushNamed(context, loading, arguments: destination);
   }
 
-  static void goToDashboard(BuildContext context, List<WeatherData> data) {
-    Navigator.pushReplacementNamed(context, dashboard, arguments: data);
+  static void goToForecastDetail(BuildContext context, ForecastData data) {
+    Navigator.pushReplacementNamed(context, forecastDetail, arguments: data);
   }
 
-  static void goToDetail(BuildContext context, WeatherData data) {
-    Navigator.pushNamed(context, detail, arguments: data);
+  static void goToWorldCities(
+    BuildContext context,
+    List<ForecastData> cities,
+  ) {
+    Navigator.pushReplacementNamed(context, worldCities, arguments: cities);
   }
 
   static void goToError(BuildContext context, String message) {
@@ -54,7 +61,14 @@ class AppRoutes {
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
-  static void restartLoading(BuildContext context) {
-    Navigator.pushReplacementNamed(context, loading);
+  static void restartLoading(
+    BuildContext context, {
+    DestinationType destination = DestinationType.senegal,
+  }) {
+    Navigator.pushReplacementNamed(
+      context,
+      loading,
+      arguments: destination,
+    );
   }
 }

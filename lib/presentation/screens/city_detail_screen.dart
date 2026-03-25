@@ -117,7 +117,13 @@ class CityDetailScreen extends StatelessWidget {
 
                       const SizedBox(height: 12),
 
-                      MapCardWidget(data: data)
+                      MapCardWidget(
+                        latitude: data.latitude,
+                        longitude: data.longitude,
+                        cityName: data.locality.isNotEmpty ? data.locality : data.cityName,
+                        temperature: data.temperature,
+                        condition: data.condition,
+                      )
                           .animate()
                           .fadeIn(delay: 600.ms, duration: 500.ms)
                           .slideY(begin: 0.1, end: 0),

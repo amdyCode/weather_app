@@ -7,21 +7,17 @@ import 'package:weather_app/core/utils/extensions.dart';
 class WeatherCardWidget extends StatelessWidget {
   final WeatherData data;
   final int index;
-  final VoidCallback onTap;
 
   const WeatherCardWidget({
     super.key,
     required this.data,
     required this.index,
-    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
-    return GestureDetector(
-          onTap: onTap,
-          child: Container(
+    return Container(
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -144,8 +140,7 @@ class WeatherCardWidget extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        )
+          )
         .animate()
         .fadeIn(delay: (100 * index).ms, duration: 500.ms)
         .slideX(begin: 0.2, end: 0);
